@@ -1,0 +1,643 @@
+
+
+/* ---------- 1. VARIABLES ---------- */
+:root {
+  --color-fondo: #120826;
+  --color-dorado: #f5c451;
+  --color-violeta: #8b5cf6;
+  --color-lila: #c4b5fd;
+  --color-texto: #f6f1ff;
+
+  --fuente-titulos: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --fuente-texto: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  --borde-suave: color-mix(in srgb, var(--color-lila) 30%, transparent);
+  --vidrio: color-mix(in srgb, var(--color-violeta) 12%, transparent);
+  --curva: ease-in-out;
+  --ancho-max: 1180px;
+}
+
+/* ---------- 2. BASE ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+  background-color: var(--color-fondo);
+  color: var(--color-texto);
+  font-family: var(--fuente-texto);
+  font-size: 1rem;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.principal {
+  flex: 1;
+  width: 100%;
+  max-width: var(--ancho-max);
+  margin: 0 auto;
+  padding: clamp(8px, 3vw, 32px) clamp(20px, 5vw, 48px) clamp(32px, 6vw, 72px);
+}
+
+.principal--centrado {
+  display: grid;
+  place-items: center;
+}
+
+.salto-contenido {
+  position: absolute;
+  top: -80px;
+  left: 16px;
+  z-index: 10;
+  padding: 10px 18px;
+  border-radius: 10px;
+  background: var(--color-dorado);
+  color: var(--color-fondo);
+  font-weight: 700;
+  text-decoration: none;
+  transition: top 0.2s var(--curva);
+}
+
+.salto-contenido:focus {
+  top: 16px;
+}
+
+/* ---------- 3. FONDO ANIMADO ---------- */
+.fondo {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  contain: paint;
+}
+
+.fondo__mancha {
+  position: absolute;
+  width: 55vmax;
+  height: 55vmax;
+  border-radius: 50%;
+  filter: blur(90px);
+  animation: derivar 22s var(--curva) infinite alternate;
+}
+
+.fondo__mancha--violeta {
+  top: -18vmax;
+  left: -15vmax;
+  background: color-mix(in srgb, var(--color-violeta) 50%, transparent);
+}
+
+.fondo__mancha--dorada {
+  right: -22vmax;
+  bottom: -22vmax;
+  background: color-mix(in srgb, var(--color-dorado) 25%, transparent);
+  animation-duration: 28s;
+}
+
+.fondo__mancha--lila {
+  top: 35%;
+  left: 38%;
+  background: color-mix(in srgb, var(--color-lila) 14%, transparent);
+  animation-duration: 34s;
+}
+
+/* ---------- 4. CABECERA ---------- */
+.cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  max-width: var(--ancho-max);
+  margin: 0 auto;
+  padding: clamp(16px, 3vw, 28px) clamp(20px, 5vw, 48px);
+}
+
+.marca {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--color-texto);
+  text-decoration: none;
+  border-radius: 12px;
+}
+
+.marca:focus-visible {
+  outline: 3px solid var(--color-lila);
+  outline-offset: 4px;
+}
+
+.marca__logo {
+  width: auto;
+  height: 44px;
+}
+
+.marca__nombre {
+  font-family: var(--fuente-titulos);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.cabecera__etiqueta {
+  margin: 0;
+  padding: 6px 14px;
+  border: 1px solid var(--borde-suave);
+  border-radius: 999px;
+  background: var(--vidrio);
+  color: var(--color-lila);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+/* ---------- 5. PORTADA (TEXTO) ---------- */
+.portada {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  align-items: center;
+  gap: clamp(24px, 6vw, 80px);
+  min-height: min(620px, 72vh);
+}
+
+.portada__texto {
+  animation: entrar 0.9s var(--curva) both;
+}
+
+.portada__sobretitulo {
+  margin: 0 0 12px;
+  color: var(--color-dorado);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.portada__titulo {
+  margin: 0;
+  font-family: var(--fuente-titulos);
+  font-size: clamp(2.6rem, 6vw, 4.6rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: 0.02em;
+  padding-right: 0.1em;
+  color: var(--color-dorado);
+  background: linear-gradient(100deg, var(--color-dorado) 30%, var(--color-lila) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.portada__subtitulo {
+  margin: 10px 0 0;
+  font-family: var(--fuente-titulos);
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  font-weight: 600;
+  color: var(--color-texto);
+}
+
+.portada__descripcion {
+  max-width: 52ch;
+  margin: 20px 0 0;
+  color: var(--color-lila);
+  font-size: 1.05rem;
+}
+
+.portada__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px;
+  margin-top: 36px;
+}
+
+.portada__nota {
+  margin: 0;
+  color: var(--color-lila);
+  font-size: 0.85rem;
+}
+
+/* ---------- 6. BOTÓN "CONTINUAR" ----------
+   Estados: normal, :hover, :focus, :active (todos con transición suave) */
+.boton {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 42px;
+  border: 2px solid var(--color-dorado);
+  border-radius: 999px;
+  background: var(--color-dorado);
+  color: var(--color-fondo);
+  font-family: var(--fuente-texto);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    transform 0.3s var(--curva),
+    background-color 0.3s var(--curva),
+    color 0.3s var(--curva),
+    border-color 0.3s var(--curva),
+    box-shadow 0.3s var(--curva);
+  animation: pulso 2.8s var(--curva) infinite;
+}
+
+.boton__flecha {
+  display: inline-block;
+  transition: transform 0.3s var(--curva);
+}
+
+/* Hover: se eleva, cambia a texto claro y la flecha avanza */
+.boton:hover {
+  transform: translateY(-4px) scale(1.04);
+  border-color: var(--color-texto);
+  background: var(--color-texto);
+  box-shadow: 0 14px 40px color-mix(in srgb, var(--color-dorado) 45%, transparent);
+  animation: none;
+}
+
+.boton:hover .boton__flecha {
+  transform: translateX(6px);
+}
+
+/* Focus: anillo lila bien visible para teclado */
+.boton:focus {
+  outline: 4px solid var(--color-lila);
+  outline-offset: 5px;
+  animation: none;
+}
+
+/* Active: se hunde y cambia a violeta */
+.boton:active {
+  transform: translateY(2px) scale(0.97);
+  border-color: var(--color-violeta);
+  background: var(--color-violeta);
+  color: var(--color-texto);
+  box-shadow: inset 0 4px 14px rgba(18, 8, 38, 0.5);
+  animation: none;
+}
+
+/* Variante secundaria (página Próximamente) */
+.boton--secundario {
+  background: transparent;
+  color: var(--color-dorado);
+  animation: none;
+}
+
+.boton--secundario:hover .boton__flecha {
+  transform: translateX(-6px);
+}
+
+/* ---------- 7. VISUAL TEMÁTICO ----------
+   Radar de barrido + órbita de símbolos (φ, 01, ∴, { }) */
+.visual {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: min(430px, 82vw);
+  aspect-ratio: 1;
+  margin: 0 auto;
+  animation: flotar 6s var(--curva) infinite;
+}
+
+.visual__radar,
+.visual__anillo,
+.orbita {
+  position: absolute;
+  border-radius: 50%;
+}
+
+.visual__radar {
+  inset: 0;
+  overflow: hidden;
+  border: 1px solid var(--borde-suave);
+  background: radial-gradient(circle, #2a1458, #1b0d3b 55%, var(--color-fondo) 78%);
+  box-shadow: inset 0 0 60px color-mix(in srgb, var(--color-dorado) 8%, transparent), 0 30px 90px rgba(0, 0, 0, 0.45);
+}
+
+.visual__radar::before {
+  content: "";
+  position: absolute;
+  inset: -15%;
+  background: conic-gradient(from 0deg, transparent 0 300deg, color-mix(in srgb, var(--color-dorado) 38%, transparent) 345deg, transparent 360deg);
+  animation: barrido 5s linear infinite;
+}
+
+.visual__anillo {
+  border: 1px solid color-mix(in srgb, var(--color-dorado) 25%, transparent);
+}
+
+.visual__anillo--externo {
+  inset: 12%;
+}
+
+.visual__anillo--interno {
+  inset: 28%;
+  border-style: dashed;
+  border-color: var(--borde-suave);
+}
+
+.visual__nucleo {
+  position: relative;
+  width: 50%;
+  filter: drop-shadow(0 0 26px color-mix(in srgb, var(--color-dorado) 45%, transparent));
+}
+
+.orbita {
+  inset: 5%;
+  border: 1px dashed var(--borde-suave);
+  animation: orbitar 24s linear infinite;
+}
+
+.orbita__ficha {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  margin: -23px 0 0 -23px;
+  border: 1px solid var(--color-dorado);
+  border-radius: 14px;
+  background: var(--color-fondo);
+  color: var(--color-dorado);
+  font-family: var(--fuente-titulos);
+  font-size: 1.25rem;
+  font-weight: 700;
+  animation: contra-orbitar 24s linear infinite;
+}
+
+.orbita__ficha--arriba {
+  top: 0;
+  left: 50%;
+}
+
+.orbita__ficha--derecha {
+  top: 50%;
+  left: 100%;
+  color: var(--color-lila);
+  border-color: var(--color-lila);
+}
+
+.orbita__ficha--abajo {
+  top: 100%;
+  left: 50%;
+}
+
+.orbita__ficha--izquierda {
+  top: 50%;
+  left: 0;
+  color: var(--color-lila);
+  border-color: var(--color-lila);
+}
+
+/* ---------- 8. EJES TEMÁTICOS ---------- */
+.ejes {
+  margin-top: clamp(48px, 8vw, 96px);
+}
+
+.ejes__titulo {
+  margin: 0 0 24px;
+  font-family: var(--fuente-titulos);
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  text-align: center;
+}
+
+.ejes__lista {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.eje {
+  padding: 28px 24px;
+  border: 1px solid var(--borde-suave);
+  border-radius: 20px;
+  background: var(--vidrio);
+  transition:
+    transform 0.3s var(--curva),
+    border-color 0.3s var(--curva),
+    background-color 0.3s var(--curva);
+}
+
+.eje:hover {
+  transform: translateY(-6px);
+  border-color: var(--color-dorado);
+  background: color-mix(in srgb, var(--color-violeta) 22%, transparent);
+}
+
+.eje__icono {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 14px;
+  border: 2px solid var(--color-dorado);
+  border-radius: 18px;
+  object-fit: cover;
+}
+
+.eje__nombre {
+  margin: 0 0 6px;
+  font-family: var(--fuente-titulos);
+  font-size: 1.5rem;
+  color: var(--color-dorado);
+}
+
+.eje__texto {
+  margin: 0;
+  color: var(--color-lila);
+}
+
+/* ---------- 9. PÁGINA "PRÓXIMAMENTE" ---------- */
+.proximamente {
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+  text-align: center;
+}
+
+.proximamente__imagen {
+  width: min(200px, 48vw);
+  animation: flotar 6s var(--curva) infinite;
+}
+
+.proximamente__titulo {
+  margin: 0;
+  font-family: var(--fuente-titulos);
+  font-size: clamp(2.6rem, 8vw, 4.5rem);
+  color: var(--color-dorado);
+}
+
+.proximamente__texto {
+  margin: 0 0 12px;
+  color: var(--color-lila);
+}
+
+/* ---------- 10. PIE DE PÁGINA ---------- */
+.pie {
+  display: grid;
+  gap: 4px;
+  width: 100%;
+  max-width: var(--ancho-max);
+  margin: 0 auto;
+  padding: 24px clamp(20px, 5vw, 48px) 32px;
+  border-top: 1px solid var(--borde-suave);
+  color: var(--color-lila);
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.pie p {
+  margin: 0;
+}
+
+.pie strong {
+  color: var(--color-texto);
+}
+
+/* ---------- 11. ANIMACIONES ---------- */
+@keyframes derivar {
+  to {
+    transform: translate(9vmax, 6vmax) scale(1.18);
+  }
+}
+
+@keyframes entrar {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes barrido {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes orbitar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes contra-orbitar {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes flotar {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes pulso {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-dorado) 55%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 16px transparent;
+  }
+}
+
+/* ---------- 12. DISEÑO RESPONSIVO ---------- */
+
+/* Tableta */
+@media (max-width: 900px) {
+  .portada {
+    grid-template-columns: 1fr;
+    min-height: 0;
+    text-align: center;
+  }
+
+  .portada__descripcion {
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .portada__acciones {
+    justify-content: center;
+  }
+
+  .visual {
+    order: -1;
+    width: min(340px, 78vw);
+  }
+
+  .ejes__lista {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Móvil */
+@media (max-width: 520px) {
+  .cabecera {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .boton {
+    justify-content: center;
+    width: 100%;
+    padding: 18px 24px;
+  }
+
+  .portada__acciones {
+    flex-direction: column;
+  }
+
+  .orbita__ficha {
+    width: 38px;
+    height: 38px;
+    margin: -19px 0 0 -19px;
+    font-size: 1rem;
+  }
+}
+
+/* Pantallas grandes */
+@media (min-width: 1400px) {
+  :root {
+    --ancho-max: 1280px;
+  }
+}
+
+/* ---------- 13. MOVIMIENTO REDUCIDO ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

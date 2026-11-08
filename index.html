@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="SOPHIALAP: objeto virtual de aprendizaje interactivo que conecta la filosofía con la informática para estudiantes de grados 10° y 11°.">
+  <meta name="theme-color" content="#120826">
+  <title>SOPHIALAP · Filosofía e informática global</title>
+  <link rel="icon" type="image/png" href="img/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&amp;family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Fondo decorativo: manchas de luz animadas -->
+  <div class="fondo" aria-hidden="true">
+    <span class="fondo__mancha fondo__mancha--violeta"></span>
+    <span class="fondo__mancha fondo__mancha--dorada"></span>
+    <span class="fondo__mancha fondo__mancha--lila"></span>
+  </div>
+
+  <a class="salto-contenido" href="#contenido-principal">Saltar al contenido</a>
+
+  <header class="cabecera">
+    <a class="marca" href="index.html">
+      <img class="marca__logo" src="img/escudo-sophialap.png" width="35" height="44" alt="Logotipo de SOPHIALAP: escudo violeta y dorado con una columna jónica">
+      <span class="marca__nombre">SOPHIALAP</span>
+    </a>
+    <p class="cabecera__etiqueta">OVA · Fundamentos de Algoritmia</p>
+  </header>
+
+  <main id="contenido-principal" class="principal">
+
+    <!-- Portada: título, subtítulo, llamado a la acción y visual temático -->
+    <section class="portada" aria-labelledby="titulo-ova">
+      <div class="portada__texto">
+        <p class="portada__sobretitulo">Objeto Virtual de Aprendizaje · Grados 10° y 11°</p>
+        <h1 id="titulo-ova" class="portada__titulo">SOPHIALAP</h1>
+        <p class="portada__subtitulo">Filosofía e informática global</p>
+        <p class="portada__descripcion">
+          Un recorrido interactivo para descubrir cómo las grandes preguntas de la filosofía
+          dialogan con los algoritmos, las máquinas y el mundo digital que habitamos.
+        </p>
+        <div class="portada__acciones">
+          <a class="boton" href="contenido.html">
+            <span class="boton__texto">Continuar</span>
+            <span class="boton__flecha" aria-hidden="true">→</span>
+          </a>
+          <p class="portada__nota">Duración estimada: 45 minutos</p>
+        </div>
+      </div>
+
+      <div class="visual">
+        <div class="visual__radar" aria-hidden="true"></div>
+        <div class="visual__anillo visual__anillo--externo" aria-hidden="true"></div>
+        <div class="visual__anillo visual__anillo--interno" aria-hidden="true"></div>
+        <div class="orbita" aria-hidden="true">
+          <span class="orbita__ficha orbita__ficha--arriba">φ</span>
+          <span class="orbita__ficha orbita__ficha--derecha">01</span>
+          <span class="orbita__ficha orbita__ficha--abajo">∴</span>
+          <span class="orbita__ficha orbita__ficha--izquierda">{ }</span>
+        </div>
+        <img class="visual__nucleo" src="img/escudo-sophialap.png" width="412" height="527" alt="Escudo de SOPHIALAP: columna jónica con circuitos, corona de laurel, red neuronal y globo terráqueo en violeta y dorado">
+      </div>
+    </section>
+
+    <!-- Ejes temáticos del OVA -->
+    <section class="ejes" aria-labelledby="titulo-ejes">
+      <h2 id="titulo-ejes" class="ejes__titulo">¿Qué vas a explorar?</h2>
+      <ul class="ejes__lista">
+        <li class="eje">
+          <img class="eje__icono" src="img/detalle-columna.png" width="64" height="64" alt="Columna jónica con líneas de circuito, símbolo de la lógica clásica y la computación">
+          <h3 class="eje__nombre">Lógica y razonamiento</h3>
+          <p class="eje__texto">Del silogismo de Aristóteles al pensamiento algorítmico.</p>
+        </li>
+        <li class="eje">
+          <img class="eje__icono" src="img/detalle-red.png" width="64" height="64" alt="Red neuronal de nodos violetas y dorados que representa la mente y la máquina">
+          <h3 class="eje__nombre">Mente y máquina</h3>
+          <p class="eje__texto">¿Puede pensar una computadora? Conciencia e inteligencia artificial.</p>
+        </li>
+        <li class="eje">
+          <img class="eje__icono" src="img/detalle-globo.png" width="64" height="64" alt="Globo terráqueo sobre una corona de laurel que representa la ética en el mundo digital">
+          <h3 class="eje__nombre">Ética digital</h3>
+          <p class="eje__texto">Datos, privacidad y responsabilidad en un mundo conectado.</p>
+        </li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="pie">
+    <p class="pie__autores"><strong>Autores:</strong> Alejandro Ciro, Ana Vega y Juan Parra</p>
+    <p class="pie__grupo">Grupo · Fundamentos de Algoritmia · Licenciatura en Informática y Medios Audiovisuales, Universidad de Córdoba</p>
+    <p class="pie__anio">© 2026</p>
+  </footer>
+
+</body>
+</html>
