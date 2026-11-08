@@ -492,7 +492,8 @@ img {
 }
 
 /* ---------- 10. PIE DE PÁGINA ---------- */
-.pie {
+.pie,
+.pie-pagina {
   display: grid;
   gap: 4px;
   width: 100%;
@@ -505,12 +506,20 @@ img {
   text-align: center;
 }
 
-.pie p {
+.pie p,
+.pie-pagina p {
   margin: 0;
 }
 
-.pie strong {
+.pie strong,
+.pie-pagina strong {
   color: var(--color-texto);
+}
+
+.pie-pagina {
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.9rem;
 }
 
 /* ---------- 11. ANIMACIONES ---------- */
