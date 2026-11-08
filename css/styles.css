@@ -517,9 +517,77 @@ img {
 }
 
 .pie-pagina {
-  text-align: center;
-  padding: 1rem;
-  font-size: 0.9rem;
+  max-width: none;
+  margin-top: auto;
+  padding: 24px clamp(20px, 5vw, 48px);
+  background: color-mix(in srgb, var(--color-fondo) 72%, transparent);
+  font-size: 0.8rem;
+  text-align: left;
+}
+
+.pie-pagina__contenido {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  width: 100%;
+  max-width: var(--ancho-max);
+  margin: 0 auto;
+}
+
+.pie-pagina__marca {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--color-texto);
+  text-decoration: none;
+}
+
+.pie-pagina__simbolo {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border: 1px solid var(--borde-suave);
+  border-radius: 50%;
+  color: var(--color-dorado);
+  font-family: var(--fuente-titulos);
+  font-size: 1.4rem;
+}
+
+.pie-pagina__identidad {
+  display: grid;
+  gap: 2px;
+}
+
+.pie-pagina__identidad strong {
+  color: var(--color-dorado);
+  letter-spacing: 0.1em;
+}
+
+.pie-pagina__identidad span {
+  color: var(--color-lila);
+}
+
+.pie-pagina__creditos {
+  display: grid;
+  gap: 4px;
+  text-align: right;
+}
+
+.pie-pagina__creditos p:first-child {
+  color: var(--color-texto);
+}
+
+.pie-pagina__creditos span {
+  padding: 0 4px;
+  color: var(--color-dorado);
+}
+
+.pie-pagina__marca:focus-visible {
+  outline: 2px solid var(--color-dorado);
+  outline-offset: 5px;
+  border-radius: 2px;
 }
 
 /* ---------- 11. ANIMACIONES ---------- */
@@ -629,6 +697,16 @@ img {
     height: 38px;
     margin: -19px 0 0 -19px;
     font-size: 1rem;
+  }
+
+  .pie-pagina__contenido {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .pie-pagina__creditos {
+    text-align: left;
   }
 }
 
