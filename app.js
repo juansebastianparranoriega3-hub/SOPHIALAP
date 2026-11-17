@@ -57,6 +57,11 @@ let syncMessage = "Conectando…";
 let issuedCode = "";
 /** Nombre del estudiante al que pertenece issuedCode. */
 let issuedCodeName = "";
+/** Deja de mostrar el último código personal emitido (al borrar datos, quitar un estudiante o salir del panel). */
+const olvidarCodigoMostrado = () => {
+  issuedCode = "";
+  issuedCodeName = "";
+};
 /** Lista de estudiantes descargada para el panel docente. */
 let teacherRoster = [];
 /** Recursos compartidos que guarda el docente en la nube. */
@@ -3226,6 +3231,9 @@ const render = (nav) => {
 let ultimaVista = "";
 /** Cambia de vista, limpia la retroalimentación, enfoca el título y sube al inicio. */
 const irA = (vista) => {
+  // Al salir del panel docente se oculta el código del último estudiante registrado
+  // (privacidad en equipos compartidos).
+  if (vistaActual === "doc" && vista !== "doc") olvidarCodigoMostrado();
   vistaActual = vista;
   retroalimentacion = null;
   render(1);
@@ -3312,6 +3320,7 @@ const acciones = {
           await api(`/api/sofia/teacher/students/${encodeURIComponent(clave)}`, { method: "DELETE" });
           teacherRoster = teacherRoster.filter((registro) => registro.id !== clave);
           delete estado.teacherCodes[clave];
+          olvidarCodigoMostrado();
           persist();
           setSync("synced", "Estudiante eliminado");
           render();
@@ -3452,6 +3461,7 @@ const acciones = {
             await api(`/api/sofia/teacher/students/${encodeURIComponent(registro.id)}`, { method: "DELETE" });
           teacherRoster = [];
           estado.teacherCodes = {};
+          olvidarCodigoMostrado();
           persist();
           setSync("synced", "Lista vacía sincronizada");
           render();
@@ -3599,6 +3609,7 @@ const acciones = {
       teacherReady = false;
       teacherRoster = [];
       teacherSettings = { resources: {}, extraResources: {} };
+      olvidarCodigoMostrado();
       setSync("synced", "Sesión docente cerrada");
       irA("home");
     } catch (e) {
@@ -3656,6 +3667,7 @@ const acciones = {
   wipe: () =>
     dialogo("¿Borrar todos los perfiles de este dispositivo?", () => {
       estado.p = {};
+      olvidarCodigoMostrado();
       save();
       render();
     }),
