@@ -1,5 +1,5 @@
 /* ==========================================================
-   SOPHIALAP · Filosofía e informática global
+   SOPHIALAP · Lógica: del silogismo al algoritmo
    Fundamentos de Algoritmia · Universidad de Córdoba · 2026
    Índice:
    1. Variables (paleta, tipografía, movimiento)
@@ -7,18 +7,18 @@
    3. Fondo: auroras y constelación (#net)
    4. Utilidades de accesibilidad
    5. Cabecera
-   6. Pie de página
+   6. Pie de página (logo de la universidad y enlace a créditos)
    7. Tipografía
    8. Botones
    9. Formularios y modo escritura
-   10. Superficies (tarjetas, consejos, citas)
+   10. Superficies (tarjetas, consejos, citas, argumentos y pseudocódigo)
    11. Portada del OVA
    12. Inicio (perfil y cómo funciona)
-   13. Ruta de periodos
+   13. Tu lección: pasos de la lección
    14. Unidad: pasos y barras de progreso
-   15. Actividades (ordenar, V/F, retos, dilema)
+   15. Actividades (ordenar, preguntas con pista)
    16. Retroalimentación (acierto / error / pista)
-   17. Resumen del periodo y resultado final
+   17. Cierre, resultado final y créditos
    18. Panel docente
    19. Ventanas de diálogo
    20. Animaciones (@keyframes y entrada de vistas)
@@ -90,6 +90,8 @@ html {
   font-size: calc(16px * var(--u));
   color-scheme: dark;
   scrollbar-color: var(--surface-2) var(--bg-deep);
+  /* La órbita giratoria de la portada no debe crear scroll horizontal */
+  overflow-x: clip;
 }
 
 body {
@@ -142,8 +144,9 @@ main {
   contain: paint;
 }
 
-.aur b {
+.aur span {
   position: absolute;
+  display: block;
   width: 55vmax;
   height: 55vmax;
   border-radius: 50%;
@@ -151,20 +154,20 @@ main {
   animation: derivar 22s ease-in-out infinite alternate;
 }
 
-.aur b:nth-child(1) {
+.aur span:nth-child(1) {
   top: -18vmax;
   left: -15vmax;
   background: rgba(139, 92, 246, 0.45);
 }
 
-.aur b:nth-child(2) {
+.aur span:nth-child(2) {
   right: -22vmax;
   bottom: -22vmax;
   background: rgba(245, 196, 81, 0.22);
   animation-duration: 28s;
 }
 
-.aur b:nth-child(3) {
+.aur span:nth-child(3) {
   top: 35%;
   left: 38%;
   background: rgba(147, 51, 234, 0.28);
@@ -188,7 +191,7 @@ main {
   margin: -1px;
   padding: 0;
   overflow: hidden;
-  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
   white-space: nowrap;
   border: 0;
 }
@@ -347,24 +350,58 @@ h2:focus,
 }
 
 /* ---------- 6. PIE DE PÁGINA ---------- */
+/* Logo de la universidad en monocromo claro + línea fina + texto pequeño (en fila en escritorio, centrado en móvil) */
 .pie {
-  display: grid;
-  gap: 4px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 14px 22px;
   width: min(100% - 32px, var(--ancho-max));
   margin: 0 auto;
-  padding: 24px 0 max(32px, env(safe-area-inset-bottom));
-  border-top: 1px solid var(--border-strong);
+  padding: 26px 0 max(32px, env(safe-area-inset-bottom));
+  border-top: 1px solid var(--border);
   color: var(--text-muted);
-  font-size: 0.85rem;
-  text-align: center;
+  font-size: 0.8rem;
+  letter-spacing: 0.01em;
 }
 
-.pie p {
+.pie__logo {
+  display: block;
+  flex: none;
+  border-radius: var(--radius-s);
+}
+
+.pie__logo img {
+  width: auto;
+  height: 48px;
+  filter: invert(1) hue-rotate(180deg) saturate(0.6) brightness(1.1);
+  mix-blend-mode: screen;
+  opacity: 0.85;
+  transition: opacity var(--dur-base) var(--ease-std);
+}
+
+.pie__sep {
+  align-self: stretch;
+  width: 1px;
+  min-height: 34px;
+  background: var(--border-strong);
+}
+
+.pie__texto {
   margin: 0;
+  max-width: 60ch;
 }
 
-.pie strong {
-  color: var(--text);
+.pie__enlace {
+  padding: 2px 0;
+  border: 0;
+  background: none;
+  color: var(--gold-soft);
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
 }
 
 /* ---------- 7. TIPOGRAFÍA ---------- */
@@ -453,8 +490,9 @@ p {
   cursor: pointer;
   transition:
     transform var(--dur-press) ease-out,
-    box-shadow var(--dur-press) ease-out,
-    background-color var(--dur-fast) var(--ease-std),
+    box-shadow var(--dur-fast) var(--ease-out),
+    background-color var(--dur-base) var(--ease-std),
+    outline-offset var(--dur-fast) var(--ease-out),
     border-color var(--dur-fast) var(--ease-std);
 }
 
@@ -463,6 +501,12 @@ p {
   background: var(--gold);
   color: var(--on-gold);
   box-shadow: 0 4px 0 var(--gold-deep), 0 10px 24px rgba(245, 196, 81, 0.18);
+}
+
+.btn:focus-visible {
+  outline: 3px solid var(--lilac);
+  outline-offset: 4px;
+  box-shadow: 0 4px 0 var(--gold-deep), 0 0 0 8px rgba(196, 181, 253, 0.22);
 }
 
 .btn:active:not([aria-disabled="true"]):not(:disabled) {
@@ -692,6 +736,56 @@ textarea {
   text-transform: uppercase;
 }
 
+/* Objetivo de aprendizaje */
+.objetivo {
+  border-color: rgba(245, 196, 81, 0.4);
+  background: linear-gradient(160deg, rgba(245, 196, 81, 0.1), rgba(30, 18, 56, 0.82) 55%);
+}
+
+.objetivo h2 {
+  font-size: clamp(1.4rem, 3.4vw, 1.9rem);
+}
+
+/* Argumento: premisas en líneas y la conclusión bajo una raya, como en lógica */
+.argu {
+  display: block;
+  margin: 8px 0 2px;
+}
+
+.argu__p,
+.argu__c {
+  display: block;
+  padding: 2px 0;
+}
+
+.argu__c {
+  margin-top: 4px;
+  padding-top: 6px;
+  border-top: 1px solid var(--gold-deep);
+  font-weight: 600;
+}
+
+.argu em {
+  color: var(--text-muted);
+  font-size: 0.85em;
+  font-style: normal;
+}
+
+/* Pseudocódigo: monoespaciado, con scroll propio si una línea no cabe */
+.pseudo {
+  max-width: 100%;
+  margin: 10px 0;
+  padding: 12px 16px;
+  overflow-x: auto;
+  border: 1px solid var(--border-strong);
+  border-left: 3px solid var(--gold);
+  border-radius: var(--radius-s);
+  background: rgba(11, 4, 24, 0.6);
+  color: var(--gold-soft);
+  font: 0.9rem/1.55 ui-monospace, "Cascadia Code", Consolas, "Courier New", monospace;
+  white-space: pre;
+}
+
 .recs {
   display: grid;
   gap: 10px;
@@ -726,6 +820,10 @@ textarea {
   color: var(--gold);
   font-weight: 700;
   white-space: nowrap;
+}
+
+.rec-acciones {
+  margin: 0 0 8px;
 }
 
 .pill {
@@ -988,11 +1086,15 @@ textarea {
   text-align: center;
 }
 
+.sum--inicio {
+  margin: 26px 0;
+}
+
 .cta p {
   margin-inline: auto;
 }
 
-/* ---------- 13. RUTA DE PERIODOS ---------- */
+/* ---------- 13. TU LECCIÓN: PASOS DE LA LECCIÓN ---------- */
 .route {
   position: relative;
   display: grid;
@@ -1011,7 +1113,7 @@ textarea {
   align-items: start;
 }
 
-/* Línea conectora: se llena de dorado cuando el periodo está completado */
+/* Línea conectora: se llena de dorado cuando el paso está completado */
 .node:not(:last-child)::after {
   content: "";
   position: absolute;
@@ -1043,7 +1145,6 @@ textarea {
   font-weight: 700;
 }
 
-.node.is-open .node__dot,
 .node.is-active .node__dot {
   border-color: var(--gold);
   color: var(--gold);
@@ -1066,12 +1167,10 @@ textarea {
   color: var(--text);
   font: inherit;
   text-align: left;
-  cursor: pointer;
   box-shadow: 0 10px 28px rgba(8, 3, 22, 0.3);
-  transition: transform var(--dur-base) var(--ease-card), border-color var(--dur-base) var(--ease-card), box-shadow var(--dur-base) var(--ease-card);
 }
 
-.node__card[aria-disabled="true"] {
+.node.is-locked .node__card {
   opacity: 0.62;
   background: rgba(30, 18, 56, 0.5);
 }
@@ -1090,7 +1189,6 @@ textarea {
   letter-spacing: 0.02em;
 }
 
-.is-open .node__state,
 .is-active .node__state {
   background: rgba(245, 196, 81, 0.14);
   color: var(--gold-soft);
@@ -1116,8 +1214,11 @@ textarea {
   font-size: 0.92rem;
 }
 
-.node__topic strong {
-  color: var(--text);
+.acciones-leccion {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  margin-top: 14px;
 }
 
 /* ---------- 14. UNIDAD: PASOS Y BARRAS ---------- */
@@ -1190,7 +1291,7 @@ textarea {
 }
 
 /* ---------- 15. ACTIVIDADES ---------- */
-/* Ordenar pasos */
+/* Ordenar bloques (Actividad 1) */
 .bl {
   display: flex;
   flex-direction: column;
@@ -1247,7 +1348,7 @@ textarea {
   border-color: rgba(245, 196, 81, 0.35);
 }
 
-/* Verdadero / falso y retos */
+/* Preguntas con pista (A2, A3 y evaluación) */
 .nd {
   margin: 14px 0;
   padding: 16px;
@@ -1256,9 +1357,19 @@ textarea {
   background: rgba(11, 4, 24, 0.35);
 }
 
-.nd > p {
+.q-txt {
   margin-bottom: 10px;
   font-weight: 500;
+}
+
+.q-n {
+  color: var(--gold);
+  font-weight: 700;
+}
+
+.opt.is-wrong {
+  border-color: var(--danger);
+  text-decoration: line-through;
 }
 
 .opts {
@@ -1375,7 +1486,7 @@ textarea {
   animation: aparecer var(--dur-base) var(--ease-out);
 }
 
-/* ---------- 17. RESUMEN Y FINAL ---------- */
+/* ---------- 17. CIERRE, RESULTADO FINAL Y CRÉDITOS ---------- */
 .ps {
   display: flex;
   flex-wrap: wrap;
@@ -1399,6 +1510,10 @@ textarea {
   color: var(--text-muted);
 }
 
+.nota-rangos {
+  font-size: 0.82rem;
+}
+
 .grade-h {
   margin-top: 18px;
 }
@@ -1411,6 +1526,59 @@ textarea {
 
 .final-grade strong {
   font-size: 3rem;
+}
+
+.ideas {
+  margin: 0;
+  padding-left: 22px;
+}
+
+.ideas li {
+  margin: 8px 0;
+  padding-left: 4px;
+}
+
+.ideas li::marker {
+  color: var(--gold);
+  font-weight: 700;
+}
+
+.reflexion {
+  margin: 8px 0 0;
+  padding: 12px 16px;
+  border-left: 3px solid var(--gold);
+  border-radius: 0 var(--radius-s) var(--radius-s) 0;
+  background: rgba(245, 196, 81, 0.07);
+  font-style: italic;
+  overflow-wrap: anywhere;
+}
+
+.creditos__logo {
+  width: auto;
+  height: 64px;
+  margin-bottom: 16px;
+  filter: invert(1) hue-rotate(180deg) saturate(0.6) brightness(1.1);
+  mix-blend-mode: screen;
+  opacity: 0.9;
+}
+
+.creditos__autores {
+  margin-top: 0;
+  color: var(--gold-soft);
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.cred-list {
+  margin: 8px 0 0;
+  padding-left: 20px;
+}
+
+.cred-list li {
+  margin: 6px 0;
+  overflow-wrap: anywhere;
 }
 
 .nv {
@@ -1451,7 +1619,7 @@ textarea {
 
 .tl {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
   gap: 12px;
   margin: 14px 0;
 }
@@ -1871,6 +2039,11 @@ details.rd summary {
   font-weight: 500;
 }
 
+/* Preguntas más falladas: la etiqueta necesita más espacio */
+.hb--pct li {
+  grid-template-columns: minmax(0, 46%) minmax(0, 1fr) 52px;
+}
+
 .hb--stu {
   max-height: 480px;
   overflow-y: auto;
@@ -1897,6 +2070,30 @@ details.rd summary {
 .hb__btn small {
   color: var(--text-muted);
   font-weight: 500;
+}
+
+.lp {
+  background: linear-gradient(90deg, var(--violet), var(--gold));
+}
+
+.ev-err {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ev-err li {
+  padding: 10px 12px;
+  border-left: 3px solid var(--danger);
+  border-radius: var(--radius-s);
+  background: rgba(11, 4, 24, 0.35);
+}
+
+.ev-err small {
+  display: block;
+  color: var(--text-muted);
 }
 
 /* Alertas */
@@ -1953,7 +2150,6 @@ details.rd summary {
   position: relative;
   max-width: 100%;
   overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
 }
 
 .dt__row {
@@ -1964,6 +2160,10 @@ details.rd summary {
 .dt__row.is-sel {
   background: rgba(245, 196, 81, 0.09);
   box-shadow: inset 3px 0 0 var(--gold);
+}
+
+.dt__avance {
+  min-width: 130px;
 }
 
 .dt__acts {
@@ -2066,7 +2266,7 @@ details.rd summary {
 }
 
 .dt--det th[scope="row"] {
-  min-width: 150px;
+  min-width: 112px;
   color: var(--text);
   font-weight: 700;
 }
@@ -2168,6 +2368,26 @@ details.rd summary {
 }
 
 /* ---------- 19. VENTANAS DE DIÁLOGO ---------- */
+.capa-dialogo {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.67);
+}
+
+.capa-dialogo--codigo {
+  z-index: 25;
+  background: rgba(0, 0, 0, 0.73);
+}
+
+.capa-dialogo > .card {
+  width: min(100%, 460px);
+  margin: 0;
+}
+
 [role="dialog"] > .card,
 [role="dialog"] > section.card {
   max-width: min(100%, 460px);
@@ -2280,9 +2500,12 @@ main.enter .route > .node {
   }
 
   /* Tarjetas interactivas: se elevan con sombra teñida de dorado */
+  .pie__logo:hover img {
+    opacity: 1;
+  }
+
   .eje:hover,
-  .rec:hover,
-  .node__card:not([aria-disabled="true"]):hover {
+  .rec:hover {
     transform: translateY(-4px);
     border-color: rgba(245, 196, 81, 0.5);
     box-shadow: 0 16px 34px rgba(245, 196, 81, 0.14);
@@ -2394,6 +2617,31 @@ main.enter .route > .node {
 
   .code-box {
     align-items: flex-start;
+  }
+
+  .pseudo {
+    padding: 10px 12px;
+    font-size: 0.8rem;
+  }
+
+  .pie {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .pie__logo img {
+    height: 38px;
+  }
+
+  .pie__sep {
+    align-self: center;
+    width: 64px;
+    min-height: 0;
+    height: 1px;
+  }
+
+  .creditos__logo {
+    height: 48px;
   }
 }
 

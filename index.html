@@ -2,28 +2,111 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#120826">
-  <meta name="description" content="SOPHIALAP: objeto virtual de aprendizaje interactivo que conecta la filosofía con la informática para estudiantes de grados 10° y 11°.">
-  <title>SOPHIALAP · Filosofía e informática global</title>
+  <meta name="description" content="SOPHIALAP · Lógica: del silogismo al algoritmo. Lección interactiva de 45 minutos para grados 10° y 11°: premisas y conclusión, validez y verdad, falacias y cómo un razonamiento se convierte en un algoritmo.">
+  <title>SOPHIALAP · Lógica: del silogismo al algoritmo</title>
   <link rel="icon" type="image/png" href="assets/favicon.png">
   <!-- Tipografías: Cormorant Garamond (titulares), Inter (texto) y Cinzel (sobretítulos) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&amp;family=Cormorant+Garamond:wght@600;700&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&amp;family=Cormorant+Garamond:wght@600;700&amp;family=Inter:wght@400;500;600;700&amp;display=swap">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <!-- Fondo: auroras de luz y constelación animada (no se reinician al cambiar de vista) -->
-  <div class="aur" aria-hidden="true"><b></b><b></b><b></b></div>
+  <div class="aur" aria-hidden="true"><span></span><span></span><span></span></div>
   <canvas id="net" aria-hidden="true"></canvas>
 
   <a class="skip" href="#main">Saltar al contenido</a>
   <div id="live" class="sr" aria-live="polite" aria-atomic="true"></div>
 
-  <!-- La aplicación (cabecera, vista activa y pie) se dibuja aquí desde app.js -->
-  <div id="app"></div>
+  <!-- Aplicación: la portada es HTML estático; app.js toma el control al pulsar «Continuar» -->
+  <div id="app">
+    <!-- Cabecera: marca del OVA y herramientas (tamaño de texto, créditos y acceso docente) -->
+    <header class="top">
+      <div class="brand-group">
+        <button class="brand" type="button" data-a="cover" aria-label="Ir a la portada · SOPHIALAP">
+          <img src="assets/logo.png" width="35" height="44" alt="Logotipo de SOPHIALAP: escudo violeta y dorado con una columna jónica">
+          <span>SOPHIALAP</span>
+        </button>
+        <p class="tag">OVA · Fundamentos de Algoritmia</p>
+      </div>
+      <div class="tools" role="group" aria-label="Tamaño del texto, créditos y acceso docente">
+        <button type="button" data-a="sz" data-i="-1" aria-label="Texto más pequeño">A−</button>
+        <span>100%</span>
+        <button type="button" data-a="sz" data-i="1" aria-label="Texto más grande">A+</button>
+        <button type="button" data-a="creditos">Créditos</button>
+        <button type="button" data-a="doc">🔐 Docente</button>
+        <span id="sync-status" class="sync-line" data-state="syncing" role="status" aria-live="polite">
+          <i class="sync-dot" aria-hidden="true"></i><span>Conectando…</span>
+        </span>
+      </div>
+    </header>
 
-  <script src="./app.js"></script>
+    <!-- Portada del OVA -->
+    <main id="main" class="cover enter" tabindex="-1">
+      <section class="portada" aria-labelledby="titulo-ova">
+        <div class="portada__texto">
+          <p class="portada__sobretitulo">Objeto Virtual de Aprendizaje · Grados 10° y 11°</p>
+          <h1 id="titulo-ova" class="portada__titulo">SOPHIALAP</h1>
+          <p class="portada__subtitulo">Lógica: del silogismo al algoritmo</p>
+          <p class="portada__descripcion">¿Cómo puede una máquina «razonar» siguiendo reglas? En esta lección descubrirás cómo un argumento de Aristóteles se convierte, paso a paso, en un algoritmo: premisas, conclusiones, validez y condiciones si/entonces.</p>
+          <div class="portada__acciones">
+            <button class="btn btn--lg" type="button" data-a="home">
+              <span>Continuar</span><span class="btn__flecha" aria-hidden="true">→</span>
+            </button>
+            <p class="portada__nota">Duración estimada: 45 minutos</p>
+          </div>
+        </div>
+        <!-- Visual temático: radar, anillos, órbita de fichas y escudo -->
+        <div class="visual">
+          <div class="visual__radar" aria-hidden="true"></div>
+          <div class="visual__anillo visual__anillo--externo" aria-hidden="true"></div>
+          <div class="visual__anillo visual__anillo--interno" aria-hidden="true"></div>
+          <div class="orbita" aria-hidden="true">
+            <span class="orbita__ficha orbita__ficha--arriba">φ</span>
+            <span class="orbita__ficha orbita__ficha--derecha">01</span>
+            <span class="orbita__ficha orbita__ficha--abajo">∴</span>
+            <span class="orbita__ficha orbita__ficha--izquierda">{ }</span>
+          </div>
+          <img class="visual__nucleo" src="assets/logo.png" width="412" height="527" alt="Escudo de SOPHIALAP: columna jónica con circuitos, corona de laurel, red neuronal y globo terráqueo en violeta y dorado">
+        </div>
+      </section>
+
+      <!-- Los tres momentos de la lección -->
+      <section class="ejes" aria-labelledby="titulo-ejes">
+        <h2 id="titulo-ejes" class="ejes__titulo">¿Qué vas a explorar?</h2>
+        <ul class="ejes__lista">
+          <li class="eje">
+            <img class="eje__icono" src="assets/detalle-red.png" width="64" height="64" alt="Red de nodos violetas y dorados unidos por líneas, como razones que se conectan hasta una conclusión">
+            <h3 class="eje__nombre">El argumento</h3>
+            <p class="eje__texto">Premisas que dan razones y una conclusión que se apoya en ellas.</p>
+          </li>
+          <li class="eje">
+            <img class="eje__icono" src="assets/detalle-columna.png" width="64" height="64" alt="Columna jónica griega con líneas de circuito, símbolo de la lógica clásica de Aristóteles">
+            <h3 class="eje__nombre">El silogismo</h3>
+            <p class="eje__texto">La forma de Aristóteles: válido no siempre significa verdadero.</p>
+          </li>
+          <li class="eje">
+            <img class="eje__icono" src="assets/detalle-globo.png" width="64" height="64" alt="Globo terráqueo sobre una corona de laurel, símbolo de la informática que conecta al mundo">
+            <h3 class="eje__nombre">Del silogismo al algoritmo</h3>
+            <p class="eje__texto">Reglas si/entonces que una máquina puede seguir paso a paso.</p>
+          </li>
+        </ul>
+      </section>
+    </main>
+
+    <!-- Pie: logo de la Universidad de Córdoba, asignatura, programa, universidad, año y enlace a créditos -->
+    <footer class="pie">
+      <a class="pie__logo" href="https://www.unicordoba.edu.co" target="_blank" rel="noopener">
+        <img src="assets/logo-unicordoba.png" width="640" height="191" alt="Universidad de Córdoba"><span class="sr"> (se abre en una pestaña nueva)</span>
+      </a>
+      <span class="pie__sep" aria-hidden="true"></span>
+      <p class="pie__texto">Fundamentos de Algoritmia · Licenciatura en Informática y Medios Audiovisuales, Universidad de Córdoba · © 2026 · <button class="pie__enlace" type="button" data-a="creditos">Créditos</button></p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
 </body>
 </html>
