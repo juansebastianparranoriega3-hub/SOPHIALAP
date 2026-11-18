@@ -2442,7 +2442,7 @@ const vistas = {
 const AUTORES = [
   { nombre: "Juan Parra", corto: "Juan", foto: "assets/autor-juan.webp?v=2" },
   { nombre: "Ana Vega", corto: "Ana", foto: "assets/autor-ana.webp?v=2" },
-  { nombre: "Alejandro Ciro", corto: "Alejandro", foto: "assets/autor-alejandro.webp?v=2" },
+  { nombre: "Alejandro Ciro", corto: "Alejandro", foto: "assets/autor-alejandro.webp?v=3" },
 ];
 /** Nombre del grupo de autores. */
 const GRUPO_AUTORES = "P.V.C Education";
@@ -2488,7 +2488,7 @@ const htmlEquipo = () => {
     `<div class=equipo__controles id=equipo-controles>` +
     `<div class=equipo__botones role=group aria-label="Enfocar a una persona del equipo">${botones}</div>` +
     `<button class="b2 equipo__pausa" data-a=equipoPausa>Pausar recorrido</button>` +
-    `<a class=equipo__descarga href="assets/equipo-pvc.webp?v=2" download="equipo-pvc.webp">Descargar foto del equipo</a></div>`
+    `<a class=equipo__descarga href="assets/equipo-pvc.webp?v=3" download="equipo-pvc.webp">Descargar foto del equipo</a></div>`
   );
 };
 /** Calcula el transform del lienzo que centra y agranda el arco i, como una cámara que acerca. */
