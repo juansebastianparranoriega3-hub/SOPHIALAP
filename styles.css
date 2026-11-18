@@ -1562,13 +1562,273 @@ textarea {
   opacity: 0.9;
 }
 
-.creditos__autores {
-  margin-top: 0;
+/* Créditos · escenario «El equipo»: retratos en arco con zoom tipo cámara.
+   Solo se animan transform y opacity (el filtro solo en los retratos atenuados). */
+.equipo {
+  position: relative;
+  container-type: inline-size;
+  aspect-ratio: 16 / 9;
+  margin: 18px 0 14px;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid rgba(245, 196, 81, 0.3);
+  border-radius: 28px;
+  background:
+    radial-gradient(ellipse 62% 58% at 50% 42%, rgba(139, 92, 246, 0.3), transparent 72%),
+    radial-gradient(ellipse 70% 34% at 50% 104%, rgba(245, 196, 81, 0.1), transparent 70%),
+    linear-gradient(180deg, #221345 0%, #160a30 58%, #0e0621 100%);
+  box-shadow: 0 18px 40px rgba(8, 3, 22, 0.35), inset 0 1px 0 rgba(255, 226, 154, 0.1);
+}
+
+.equipo__lienzo {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2.6cqw;
+  padding: 3cqw 4cqw 2.4cqw;
+  transform-origin: 0 0;
+  transition: transform 950ms var(--ease-out);
+}
+
+.equipo__cabecera {
+  text-align: center;
+  transition: opacity 500ms var(--ease-out);
+}
+
+.equipo__sobre {
+  margin: 0;
+  color: var(--lilac);
+  font-family: var(--font-eyebrow);
+  font-size: clamp(0.66rem, 1.45cqw, 0.95rem);
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+}
+
+.equipo__grupo {
+  margin: 0.08em 0 0;
+  color: var(--gold);
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 6.2cqw, 4.1rem);
+  font-weight: 700;
+  line-height: 1;
+  text-shadow: 0 2px 26px rgba(245, 196, 81, 0.28);
+}
+
+.equipo__fila {
+  display: flex;
+  justify-content: center;
+  gap: 4.5cqw;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.equipo__persona {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 20.5cqw;
+  transition: opacity 700ms var(--ease-out);
+}
+
+.equipo__arco {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 999px 999px 18px 18px;
+  background: none;
+  cursor: pointer;
+}
+
+.equipo__arco:focus-visible {
+  outline: 3px solid var(--lilac);
+  outline-offset: 4px;
+}
+
+/* El retrato se desvanece desde ~70 % de su alto: no se ven los hombros */
+.equipo__arco img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border: 1px solid rgba(245, 196, 81, 0.6);
+  border-radius: 999px 999px 18px 18px;
+  background: var(--surface);
+  -webkit-mask-image: linear-gradient(180deg, #000 0, #000 66%, transparent 94%);
+  mask-image: linear-gradient(180deg, #000 0, #000 66%, transparent 94%);
+  transition: filter 700ms var(--ease-out);
+}
+
+.equipo__corto {
+  position: relative;
+  margin-top: -2.2cqw;
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 2.3cqw, 1.55rem);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: opacity 400ms var(--ease-out);
+}
+
+/* Enfoque: la cámara acerca a una persona y las demás se atenúan */
+.equipo.is-enfocado .equipo__cabecera,
+.equipo.is-enfocado .equipo__corto {
+  opacity: 0;
+}
+
+.equipo.is-enfocado .equipo__persona:not(.is-foco) {
+  opacity: 0.2;
+}
+
+.equipo.is-enfocado .equipo__persona:not(.is-foco) img {
+  filter: grayscale(0.7);
+}
+
+.equipo__placas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* Velo inferior que da contraste a la placa sobre el retrato ampliado */
+.equipo__placas::before {
+  content: "";
+  position: absolute;
+  inset: 52% 0 0;
+  background: linear-gradient(180deg, transparent, rgba(14, 6, 33, 0.82) 70%);
+  opacity: 0;
+  transition: opacity 600ms var(--ease-out);
+}
+
+.equipo.is-enfocado .equipo__placas::before {
+  opacity: 1;
+}
+
+.equipo__placa {
+  position: absolute;
+  right: 4cqw;
+  bottom: 5cqw;
+  left: 4cqw;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 300ms var(--ease-out),
+    transform 300ms var(--ease-out);
+}
+
+.equipo__placa.is-visible {
+  opacity: 1;
+  transform: none;
+  transition-duration: 650ms;
+  transition-delay: 380ms;
+}
+
+.equipo__placa-nombre {
+  margin: 0;
   color: var(--gold-soft);
   font-family: var(--font-display);
-  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-size: clamp(2.1rem, 6.6cqw, 4.4rem);
   font-weight: 700;
-  line-height: 1.2;
+  line-height: 1;
+  text-shadow: 0 2px 18px rgba(8, 3, 22, 0.8);
+}
+
+.equipo__placa-nombre::after {
+  content: "";
+  display: block;
+  width: 56px;
+  height: 1px;
+  margin: 0.32em auto 0.4em;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+.equipo__placa-rol {
+  margin: 0;
+  color: var(--lilac);
+  font-family: var(--font-body);
+  font-size: clamp(0.72rem, 1.45cqw, 0.92rem);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+/* Controles bajo el escenario */
+.equipo__controles {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  margin: 0 0 18px;
+}
+
+.equipo__botones {
+  display: flex;
+  flex-wrap: wrap;
+  flex: 1 1 auto;
+}
+
+.equipo__boton[aria-pressed="true"] {
+  border-color: var(--gold);
+  background: rgba(245, 196, 81, 0.14);
+  color: var(--gold-soft);
+}
+
+/* Con movimiento reducido no hay recorrido: el botón de pausa se oculta (.b2 fija display) */
+.equipo__pausa[hidden] {
+  display: none;
+}
+
+.equipo__descarga {
+  flex-basis: 100%;
+  margin-top: 4px;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.equipo__descarga:hover,
+.equipo__descarga:focus-visible {
+  color: var(--gold-soft);
+}
+
+/* Móvil: escenario casi cuadrado y retratos más grandes */
+@media (max-width: 560px) {
+  .equipo {
+    aspect-ratio: 1 / 1.08;
+  }
+
+  .equipo__lienzo {
+    gap: 6cqw;
+  }
+
+  .equipo__fila {
+    gap: 3.5cqw;
+  }
+
+  .equipo__persona {
+    width: 29cqw;
+  }
+
+  .equipo__corto {
+    margin-top: -3.6cqw;
+  }
+
+  .equipo__placa {
+    bottom: 9cqw;
+  }
+
+  .equipo__placa-rol {
+    font-size: 0.72rem;
+    letter-spacing: 0.03em;
+  }
+
+  .equipo__boton {
+    padding: 10px 14px;
+  }
 }
 
 .cred-list {
@@ -2656,5 +2916,34 @@ main.enter .route > .node {
     animation-delay: 0ms !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* Escenario del equipo: sin zoom ni desplazamientos; el arco elegido se resalta y la placa aparece con un fundido */
+@media (prefers-reduced-motion: reduce) {
+  .equipo__placa,
+  .equipo__placa.is-visible {
+    transform: none;
+    transition: opacity 400ms ease !important;
+  }
+
+  /* Sin zoom, la placa ocupa el lugar del encabezado del grupo y no tapa los rostros */
+  .equipo__placa {
+    top: 5cqw;
+    bottom: auto;
+  }
+
+  .equipo__placas::before {
+    display: none;
+  }
+
+  .equipo.is-enfocado .equipo__persona.is-foco img {
+    border-color: var(--gold);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) and (max-width: 560px) {
+  .equipo__placa {
+    top: 20cqw;
   }
 }

@@ -2146,9 +2146,9 @@ const vistas = {
     return (
       `<main><button class="b2 back" data-a=volver>← Volver</button>` +
       `<p class=ey>${BRAND} · ${LECCION.t}</p><h1>Créditos</h1>` +
-      `<section class="card creditos__inst" aria-labelledby=cr-autores>` +
+      htmlEquipo() +
+      `<section class="card creditos__inst" aria-label="Datos del OVA">` +
       `<img class=creditos__logo src="${LOGO_UNIVERSIDAD}" width=640 height=191 alt="Universidad de Córdoba">` +
-      `<h2 id=cr-autores>Autores</h2><p class=creditos__autores>Juan Parra, Ana Vega y Alejandro Ciro</p>` +
       lista([
         "<strong>OVA:</strong> SOPHIALAP · Lógica: del silogismo al algoritmo",
         "<strong>Asignatura:</strong> Fundamentos de Algoritmia",
@@ -2437,6 +2437,156 @@ const vistas = {
     );
   },
 };
+/* ---------- 10b. CRÉDITOS: ESCENARIO «EL EQUIPO» (retratos con zoom tipo cámara) ---------- */
+/** Autores del OVA en orden fijo: nombre completo, nombre corto y retrato (800×1000). */
+const AUTORES = [
+  { nombre: "Juan Parra", corto: "Juan", foto: "assets/autor-juan.webp" },
+  { nombre: "Ana Vega", corto: "Ana", foto: "assets/autor-ana.webp" },
+  { nombre: "Alejandro Ciro", corto: "Alejandro", foto: "assets/autor-alejandro.webp" },
+];
+/** Nombre del grupo de autores. */
+const GRUPO_AUTORES = "P.V.C Education";
+/** Línea que acompaña el nombre en la placa del enfoque. */
+const ROL_AUTOR = "Autor · Licenciatura en Informática y Medios Audiovisuales";
+/** Duraciones (ms) del recorrido: vista general, enfoque de cada autor y paso del reloj interno. */
+const DURACION_GENERAL = 4000;
+const DURACION_ENFOQUE = 3200;
+const PASO_RECORRIDO = 200;
+/** Escala máxima del «zoom» y punto del retrato (fracción de su alto) que queda centrado. */
+const ESCALA_ENFOQUE = 1.9;
+const ALTURA_ROSTRO = 0.42;
+/**
+ * Estado del escenario: foco (-1 = vista general), pausa pedida por el usuario,
+ * pausas temporales (puntero encima / foco dentro), tiempo acumulado e id del intervalo.
+ */
+const recorridoEquipo = { foco: -1, pausaUsuario: false, sobre: false, dentro: false, transcurrido: 0, intervalo: 0 };
+/** Indica si el usuario pidió reducir el movimiento. */
+const movimientoReducido = () => matchMedia("(prefers-reduced-motion:reduce)").matches;
+/** HTML del escenario «El equipo»: retratos en arco, placas del enfoque, controles y enlace de descarga. */
+const htmlEquipo = () => {
+  const personas = AUTORES.map(
+    (a, i) =>
+      `<li class=equipo__persona data-persona=${i}><button class=equipo__arco data-a=equipo data-i=${i} aria-pressed=false>` +
+      `<img src="${a.foto}" width=800 height=1000 alt="${a.nombre}" decoding=async></button>` +
+      `<span class=equipo__corto aria-hidden=true>${a.corto}</span></li>`,
+  ).join("");
+  const placas = AUTORES.map(
+    (a, i) =>
+      `<div class=equipo__placa data-persona=${i}><p class=equipo__placa-nombre>${a.nombre}</p>` +
+      `<p class=equipo__placa-rol>${ROL_AUTOR}</p></div>`,
+  ).join("");
+  const botones =
+    `<button class="b2 equipo__boton" data-a=equipo data-i=-1 aria-pressed=true>Equipo</button>` +
+    AUTORES.map(
+      (a, i) => `<button class="b2 equipo__boton" data-a=equipo data-i=${i} aria-pressed=false>${a.nombre}</button>`,
+    ).join("");
+  return (
+    `<section class=equipo id=equipo aria-labelledby=cr-equipo><h2 id=cr-equipo class=sr>El equipo</h2>` +
+    `<div class=equipo__lienzo><div class=equipo__cabecera><p class=equipo__sobre>Autores del OVA</p>` +
+    `<p class=equipo__grupo>${GRUPO_AUTORES}</p></div><ul class=equipo__fila>${personas}</ul></div>` +
+    `<div class=equipo__placas aria-hidden=true>${placas}</div></section>` +
+    `<div class=equipo__controles id=equipo-controles>` +
+    `<div class=equipo__botones role=group aria-label="Enfocar a una persona del equipo">${botones}</div>` +
+    `<button class="b2 equipo__pausa" data-a=equipoPausa>Pausar recorrido</button>` +
+    `<a class=equipo__descarga href="assets/equipo-pvc.webp" download="equipo-pvc.webp">Descargar foto del equipo</a></div>`
+  );
+};
+/** Calcula el transform del lienzo que centra y agranda el arco i, como una cámara que acerca. */
+const transformacionEnfoque = (escenario, lienzo, i) => {
+  const arco = lienzo.querySelectorAll(".equipo__arco")[i];
+  if (!arco) return "";
+  let x = 0;
+  let y = 0;
+  // offsetLeft/offsetTop ignoran transformaciones: medidas estables aunque el lienzo ya esté ampliado
+  for (let el = arco; el && el !== lienzo; el = el.offsetParent) {
+    x += el.offsetLeft;
+    y += el.offsetTop;
+  }
+  const ancho = escenario.clientWidth;
+  const alto = escenario.clientHeight;
+  const escala = Math.min(ESCALA_ENFOQUE, (alto * 0.9) / arco.offsetHeight);
+  const tx = ancho / 2 - escala * (x + arco.offsetWidth / 2);
+  const ty = alto * 0.4 - escala * (y + arco.offsetHeight * ALTURA_ROSTRO);
+  return `translate(${tx.toFixed(1)}px,${ty.toFixed(1)}px) scale(${escala.toFixed(3)})`;
+};
+/** Pinta el estado actual del escenario: zoom, atenuado, placa visible y aria-pressed de los controles. */
+const aplicarEnfoqueEquipo = () => {
+  const escenario = $("#equipo");
+  if (!escenario) return;
+  const foco = recorridoEquipo.foco;
+  const lienzo = escenario.querySelector(".equipo__lienzo");
+  escenario.classList.toggle("is-enfocado", foco >= 0);
+  lienzo.style.transform = foco >= 0 && !movimientoReducido() ? transformacionEnfoque(escenario, lienzo, foco) : "";
+  escenario.querySelectorAll(".equipo__persona").forEach((p, i) => p.classList.toggle("is-foco", i === foco));
+  escenario.querySelectorAll(".equipo__placa").forEach((p, i) => p.classList.toggle("is-visible", i === foco));
+  document
+    .querySelectorAll("#equipo [data-a=equipo], #equipo-controles [data-a=equipo]")
+    .forEach((b) => b.setAttribute("aria-pressed", String(Number(b.dataset.i) === foco)));
+};
+/** Actualiza el texto del botón Pausar/Reanudar según la pausa pedida por el usuario. */
+const actualizarBotonPausa = () => {
+  const boton = $(".equipo__pausa");
+  if (boton) boton.textContent = recorridoEquipo.pausaUsuario ? "Reanudar recorrido" : "Pausar recorrido";
+};
+/** Enfoca a la persona i (-1 = vista general); si lo pidió el usuario, lo anuncia al lector de pantalla. */
+const enfocarEquipo = (i, delUsuario) => {
+  recorridoEquipo.foco = i >= 0 && i < AUTORES.length ? i : -1;
+  recorridoEquipo.transcurrido = 0;
+  aplicarEnfoqueEquipo();
+  if (delUsuario)
+    announce(
+      recorridoEquipo.foco >= 0 ? "Enfocado: " + AUTORES[recorridoEquipo.foco].nombre : "Vista del equipo completo",
+    );
+};
+/** Detiene el reloj del recorrido (al re-renderizar o salir de Créditos: no quedan intervalos huérfanos). */
+const detenerRecorridoEquipo = () => {
+  clearInterval(recorridoEquipo.intervalo);
+  recorridoEquipo.intervalo = 0;
+};
+/** Paso del reloj: suma tiempo solo si nada pausa el recorrido y avanza a la siguiente parada al cumplirse. */
+const pasoRecorridoEquipo = () => {
+  if (vistaActual !== "creditos" || !$("#equipo")) return detenerRecorridoEquipo();
+  const r = recorridoEquipo;
+  if (r.pausaUsuario || r.sobre || r.dentro || document.hidden) return;
+  r.transcurrido += PASO_RECORRIDO;
+  if (r.transcurrido < (r.foco < 0 ? DURACION_GENERAL : DURACION_ENFOQUE)) return;
+  enfocarEquipo(r.foco >= AUTORES.length - 1 ? -1 : r.foco + 1, false);
+};
+/** Prepara el escenario recién dibujado: estado inicial, pausas por puntero/foco, Escape y reloj del recorrido. */
+const montarEquipo = (vistaNueva) => {
+  const escenario = $("#equipo");
+  const controles = $("#equipo-controles");
+  if (!escenario) return;
+  if (vistaNueva) Object.assign(recorridoEquipo, { foco: -1, pausaUsuario: false, transcurrido: 0 });
+  recorridoEquipo.sobre = false;
+  recorridoEquipo.dentro = false;
+  // Los listeners viven en elementos que se recrean en cada render: no se duplican
+  escenario.addEventListener("pointerenter", () => (recorridoEquipo.sobre = true));
+  escenario.addEventListener("pointerleave", () => (recorridoEquipo.sobre = false));
+  escenario.addEventListener("focusin", () => (recorridoEquipo.dentro = true));
+  escenario.addEventListener("focusout", (e) => {
+    if (!escenario.contains(e.relatedTarget)) recorridoEquipo.dentro = false;
+  });
+  /** Escape devuelve a la vista general del equipo. */
+  const alPulsarTecla = (e) => {
+    if (e.key === "Escape" && recorridoEquipo.foco >= 0) enfocarEquipo(-1, true);
+  };
+  escenario.addEventListener("keydown", alPulsarTecla);
+  if (controles) controles.addEventListener("keydown", alPulsarTecla);
+  aplicarEnfoqueEquipo();
+  const pausa = $(".equipo__pausa");
+  // Movimiento reducido: sin recorrido automático (ni botón de pausa, porque nada se mueve solo)
+  if (movimientoReducido()) {
+    if (pausa) pausa.hidden = true;
+    return;
+  }
+  actualizarBotonPausa();
+  recorridoEquipo.intervalo = setInterval(pasoRecorridoEquipo, PASO_RECORRIDO);
+};
+// Al cambiar el tamaño de la ventana se recalcula el zoom (un único listener para toda la app)
+addEventListener("resize", () => {
+  if (vistaActual === "creditos" && recorridoEquipo.foco >= 0) aplicarEnfoqueEquipo();
+});
 /* ---------- 11. RENDER Y NAVEGACIÓN ---------- */
 /** Dibuja la vista actual en #app y restaura el foco (pendiente, título o el control previo). */
 const render = (nav) => {
@@ -2447,6 +2597,7 @@ const render = (nav) => {
       : null;
   const selectorFoco = focoPendiente;
   focoPendiente = null;
+  detenerRecorridoEquipo();
   const contenedor = $("#app");
   contenedor.innerHTML = cabecera() + vistas[vistaActual]() + pie();
   const recorrido = document.createTreeWalker(contenedor, NodeFilter.SHOW_TEXT);
@@ -2484,6 +2635,7 @@ const render = (nav) => {
     viendoTeoria;
   const esNuevaVista = claveVista !== ultimaVista;
   ultimaVista = claveVista;
+  if (vistaActual === "creditos") montarEquipo(esNuevaVista);
   if (principal && esNuevaVista) {
     principal.classList.add("enter");
     principal.querySelectorAll("[data-count]").forEach(countUp);
@@ -2835,6 +2987,22 @@ const acciones = {
   /** Va al resultado final. */
   final: () => irA("final"),
   /** Abre los créditos y recuerda la vista de origen para volver. */
+  /** Enfoca a una persona del equipo (data-i = índice) o vuelve a la vista general (-1); enfocar pausa el recorrido. */
+  equipo: (i) => {
+    const n = Number(i);
+    if (n >= 0) {
+      recorridoEquipo.pausaUsuario = true;
+      actualizarBotonPausa();
+    }
+    enfocarEquipo(n, true);
+  },
+  /** Pausa o reanuda el recorrido automático del escenario del equipo. */
+  equipoPausa: () => {
+    recorridoEquipo.pausaUsuario = !recorridoEquipo.pausaUsuario;
+    recorridoEquipo.transcurrido = 0;
+    actualizarBotonPausa();
+    announce(recorridoEquipo.pausaUsuario ? "Recorrido en pausa" : "Recorrido reanudado");
+  },
   creditos: () => {
     if (vistaActual !== "creditos") vistaPrevia = vistaActual;
     irA("creditos");
